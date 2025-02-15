@@ -91,16 +91,17 @@ public class Driver {
         time_slot.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\time_slot.csv");
 
 
-        //select the name, ID of student who has been advised by an instructor in statistics department 
+        //select the name and ID of students who has been advised by an instructor in statistics department and has Student ID < 5000 
         Predicate instructorStat = (List<Cell> row) -> row.get(2).getAsString().equals("Statistics");
         Relation instructorStatDept = ra.select(instructor, instructorStat);
         Relation instructor_Stat_ID = ra.project(instructorStatDept,List.of("Instructor ID"));
         Relation advised_ID = ra.join(advisor, instructor_Stat_ID);
         Relation student_advised_ID = ra.project(advised_ID, List.of("Student ID"));
         Relation student_advised = ra.join(student_advised_ID,student);
-        
-        Relation result1 = ra.project(student_advised, List.of("Student ID","Name"));
-        
+        Relation student_ID_Name = ra.project(student_advised, List.of("Student ID","Name"));
+        Predicate student_ID_less = (List<Cell> row) -> row.get(0).getAsInt()<5000;
+        Relation result1 = ra.select(student_ID_Name,student_ID_less);
+
         result1.print();
         
     }
