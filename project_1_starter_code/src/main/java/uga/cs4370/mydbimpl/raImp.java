@@ -183,35 +183,37 @@ class raImp implements RA{
      *                                  rel or origAttr and renamedAttr do not have
      *                                  matching argument counts.
      */
-    public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr){
-        // Check if the original and renamed attributes lists are valid
+    public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
         if (origAttr.size() != renamedAttr.size()) {
             throw new IllegalArgumentException("Original and renamed attribute lists must have the same size.");
         }
-
-        // Create a new relation with the renamed attributes
+    
+        // Preserve order of attributes while renaming
         List<String> newAttrs = new ArrayList<>(rel.getAttrs());
         List<Type> types = rel.getTypes();
-
+    
         for (int i = 0; i < origAttr.size(); i++) {
             int index = rel.getAttrIndex(origAttr.get(i));
-            newAttrs.set(index, renamedAttr.get(i)); // Rename attributes
+            if (index == -1) {
+                throw new IllegalArgumentException("Attribute " + origAttr.get(i) + " not found in relation.");
+            }
+            newAttrs.set(index, renamedAttr.get(i)); // Rename attributes in place
         }
-
-        // Build the new relation with the renamed attributes
+    
+        // Build new relation
         RelationBuilder builder = new RelationBuilder();
         builder.attributeNames(newAttrs).attributeTypes(types);
-
-        // Create the new relation for the result
         Relation result = builder.build();
-
-        // Insert all rows from rel into the new relation
+    
+        // Insert all rows from the original relation, maintaining order
         for (int i = 0; i < rel.getSize(); i++) {
-            result.insert(rel.getRow(i));
+            List<Cell> newRow = new ArrayList<>(rel.getRow(i)); // Ensure order is maintained
+            result.insert(newRow);
         }
-
+    
         return result;
     }
+    
 
     /**
      * Performs cartesian product on relations rel1 and rel2.
@@ -260,64 +262,67 @@ class raImp implements RA{
      * 
      * @return The resulting relation after applying natural join.
      */
-    public Relation join(Relation rel1, Relation rel2){
-        // Check if the relations have common attributes
+    public Relation join(Relation rel1, Relation rel2) {
+        // Find common attributes for natural join
         Set<String> commonAttrs = new HashSet<>(rel1.getAttrs());
         commonAttrs.retainAll(rel2.getAttrs());
         if (commonAttrs.isEmpty()) {
             throw new IllegalArgumentException("Relations must have common attributes for a natural join.");
         }
-
-        // Create a new relation with the union of the attributes of both rel1 and rel2
+    
+        // Build attribute list for the result relation
         List<String> newAttrs = new ArrayList<>(rel1.getAttrs());
-        for (String attr : rel2.getAttrs()) {
-            if (!newAttrs.contains(attr)) {
+        List<Type> newTypes = new ArrayList<>(rel1.getTypes());
+    
+        // Add non-duplicate attributes and types from rel2
+        for (int i = 0; i < rel2.getAttrs().size(); i++) {
+            String attr = rel2.getAttrs().get(i);
+            if (!commonAttrs.contains(attr)) {
                 newAttrs.add(attr);
+                newTypes.add(rel2.getTypes().get(i));
             }
         }
-
-        List<Type> types = new ArrayList<>(rel1.getTypes());
-        types.addAll(rel2.getTypes());
-
+    
         // Build the new relation
         RelationBuilder builder = new RelationBuilder();
-        builder.attributeNames(newAttrs).attributeTypes(types);
-
-        // Create the new relation for the result
+        builder.attributeNames(newAttrs).attributeTypes(newTypes);
         Relation result = builder.build();
-
-        // Perform the natural join
+    
+        // Perform natural join
         for (int i = 0; i < rel1.getSize(); i++) {
             List<Cell> row1 = rel1.getRow(i);
             for (int j = 0; j < rel2.getSize(); j++) {
                 List<Cell> row2 = rel2.getRow(j);
                 boolean joinCondition = true;
-
+    
+                // Check if all common attributes match
                 for (String commonAttr : commonAttrs) {
                     int index1 = rel1.getAttrIndex(commonAttr);
                     int index2 = rel2.getAttrIndex(commonAttr);
-
+    
                     if (!row1.get(index1).equals(row2.get(index2))) {
                         joinCondition = false;
                         break;
                     }
                 }
-
+    
+                // Merge rows if join condition is met
                 if (joinCondition) {
                     List<Cell> combinedRow = new ArrayList<>(row1);
-                    for (String attr : rel2.getAttrs()) {
+                    for (int k = 0; k < row2.size(); k++) {
+                        String attr = rel2.getAttrs().get(k);
                         if (!commonAttrs.contains(attr)) {
-                            int index = rel2.getAttrIndex(attr);
-                            combinedRow.add(row2.get(index));
+                            combinedRow.add(row2.get(k));
                         }
                     }
-                    result.insert(combinedRow); // Insert the combined row
+                    result.insert(combinedRow);
                 }
             }
         }
-
+    
         return result;
     }
+    
 
     /**
      * Performs theta join on relations rel1 and rel2 with predicate p.
