@@ -1,5 +1,6 @@
 package uga.cs4370.mydbimpl;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 import uga.cs4370.mydb.Relation;
@@ -78,17 +79,21 @@ public class Driver {
                 .build();
 
 
-        advisor.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\advisor.csv");
-        classroom.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\classroom.csv");
-        course.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\course.csv");
-        department.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\department_export.csv");
-        instructor.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\instructor_export.csv");
-        prereq.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\prereq.csv");
-        section.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\section.csv");
-        student.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\student.csv");
-        takes.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\takes.csv");
-        teaches.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\teaches.csv");
-        time_slot.loadData("C:\\Users\\haizh\\Documents\\Schools\\database\\mysql-files\\time_slot.csv");
+        
+        System.out.println("Current working directory: " + Paths.get("").toAbsolutePath().toString());
+
+        advisor.loadData("project_1_starter_code/CSV/advisor.csv");
+        classroom.loadData("project_1_starter_code/CSV/classroom.csv");
+        course.loadData("project_1_starter_code/CSV/course.csv");
+        department.loadData("project_1_starter_code/CSV/department_export.csv");
+        instructor.loadData("project_1_starter_code/CSV/instructor_export.csv");
+        prereq.loadData("project_1_starter_code/CSV/prereq.csv");
+        section.loadData("project_1_starter_code/CSV/section.csv");
+        student.loadData("project_1_starter_code/CSV/student.csv");
+        takes.loadData("project_1_starter_code/CSV/takes.csv");
+        teaches.loadData("project_1_starter_code/CSV/teaches.csv");
+        time_slot.loadData("project_1_starter_code/CSV/time_slot.csv");
+                
 
 
         //select the name and ID of students who has been advised by an instructor in statistics department and has Student ID < 5000 
@@ -103,7 +108,20 @@ public class Driver {
         Relation result1 = ra.select(student_ID_Name,student_ID_less);
 
         result1.print();
+
+        // Select name of advisors who advise students in either the accounting or marketing department
+        Predicate accounting = (List<Cell> row) -> row.get(2).getAsString().equals("Accounting");
+        Predicate marketing = (List<Cell> row) -> row.get(2).getAsString().equals("Marketing");
+        Relation accountingMajor = ra.select(student, accounting);
+        Relation marketingMajor = ra.select(student, marketing);
+        Relation accounting_or_marketing = ra.union(accountingMajor, marketingMajor);
+        Relation accounting_or_marketing_ID = ra.project(accounting_or_marketing, List.of("Student ID"));
+        Relation advisor_account_marketing = ra.join(advisor, accounting_or_marketing_ID);
+        Relation advisor_account_marketing_ID = ra.project(advisor_account_marketing, List.of("Instructor ID"));
+        Relation advisor_account_marketing_instructor = ra.join(advisor_account_marketing_ID, instructor);
+        Relation result2 = ra.project(advisor_account_marketing_instructor, List.of("Name"));
         
+        result2.print();
     }
 
 }
