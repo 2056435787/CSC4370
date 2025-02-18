@@ -25,7 +25,7 @@ public class Driver {
         
         Relation advisor = new RelationBuilder()
                 .attributeNames(List.of("Student ID", "Instructor ID"))
-                .attributeTypes(List.of(Type.INTEGER, Type.INTEGER))
+                .attributeTypes(List.of(Type.INTEGER, Type.STRING))
                 .build();
         
         Relation classroom = new RelationBuilder()
@@ -45,7 +45,7 @@ public class Driver {
 
         Relation instructor = new RelationBuilder()
                 .attributeNames(List.of("Instructor ID", "Name", "Dept_Name","Salary"))
-                .attributeTypes(List.of(Type.INTEGER, Type.STRING, Type.STRING, Type.DOUBLE))
+                .attributeTypes(List.of(Type.STRING, Type.STRING, Type.STRING, Type.DOUBLE))
                 .build();
                 
         Relation prereq = new RelationBuilder()
@@ -82,17 +82,17 @@ public class Driver {
         
         System.out.println("Current working directory: " + Paths.get("").toAbsolutePath().toString());
 
-        advisor.loadData("project_1_starter_code/CSV/advisor.csv");
-        classroom.loadData("project_1_starter_code/CSV/classroom.csv");
-        course.loadData("project_1_starter_code/CSV/course.csv");
-        department.loadData("project_1_starter_code/CSV/department_export.csv");
-        instructor.loadData("project_1_starter_code/CSV/instructor_export.csv");
-        prereq.loadData("project_1_starter_code/CSV/prereq.csv");
-        section.loadData("project_1_starter_code/CSV/section.csv");
-        student.loadData("project_1_starter_code/CSV/student.csv");
-        takes.loadData("project_1_starter_code/CSV/takes.csv");
-        teaches.loadData("project_1_starter_code/CSV/teaches.csv");
-        time_slot.loadData("project_1_starter_code/CSV/time_slot.csv");
+        advisor.loadData("C:\\Users\\haizh\\Downloads\\CSC4370-main\\CSC4370-main\\project_1_starter_code/CSV/advisor.csv");
+        classroom.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/classroom.csv");
+        course.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/course.csv");
+        department.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/department_export.csv");
+        instructor.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/instructor_export.csv");
+        prereq.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/prereq.csv");
+        section.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/section.csv");
+        student.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/student.csv");
+        takes.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/takes.csv");
+        teaches.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/teaches.csv");
+        time_slot.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/time_slot.csv");
                 
 
 
@@ -122,6 +122,9 @@ public class Driver {
         Relation result2 = ra.project(advisor_account_marketing_instructor, List.of("Name"));
         
         result2.print();
+
+
+        
     }
 
 }
