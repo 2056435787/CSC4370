@@ -19,4 +19,7 @@ Alexander Zakirov
 Harley Guan
 - Implemented Select, Project operation and wrote query //select the name and ID of students who has been advised by an instructor in statistics department and has Student ID < 5000
 
+Wayne Lam
+- Implemented Table Upload for CSV files into Driver // wrote query: Select department and room number of classrooms with belonging to Pol. Sci. or Statistics that have capacity greater than 50
+
     
