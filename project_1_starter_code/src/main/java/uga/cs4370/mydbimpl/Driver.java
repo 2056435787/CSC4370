@@ -111,19 +111,19 @@ public class Driver {
 
         result1.print();
 
-        // Select name of advisors who advise students in either the accounting or marketing department
-        System.out.println("Select name of advisors who advise students in either the accounting or marketing department");
-        Predicate accounting = (List<Cell> row) -> row.get(2).getAsString().equals("Accounting");
-        Predicate marketing = (List<Cell> row) -> row.get(2).getAsString().equals("Marketing");
-        Relation accountingMajor = ra.select(student, accounting);
-        Relation marketingMajor = ra.select(student, marketing);
-        Relation accounting_or_marketing = ra.union(accountingMajor, marketingMajor);
-        Relation accounting_or_marketing_ID = ra.project(accounting_or_marketing, List.of("Student ID"));
-        Relation advisor_account_marketing = ra.join(advisor, accounting_or_marketing_ID);
-        Relation advisor_account_marketing_ID = ra.project(advisor_account_marketing, List.of("Instructor ID"));
-        Relation advisor_account_marketing_instructor = ra.join(advisor_account_marketing_ID, instructor);
-        Relation result2 = ra.project(advisor_account_marketing_instructor, List.of("Name"));
-        
+        // Select department and room number of classrooms with belonging to Pol. Sci. or Statistics that have capacity greater than 50
+        System.out.println("Select department and room number of classrooms with belonging to Pol. Sci. or Statistics that have capacity greater than 50");
+        Predicate polSci = (List<Cell> row) -> row.get(0).getAsString().equals("Pol. Sci.");
+        Predicate stat = (List<Cell> row) -> row.get(0).getAsString().equals("Statistics");
+        Relation polSciBuilding = ra.select(department, polSci);
+        Relation statBuilding = ra.select(department, stat);
+        Relation polSciClassroomsBuilding = ra.join(classroom, polSciBuilding);
+        Relation statClassroomsBuilding = ra.join(classroom, statBuilding);
+        Predicate capacityGreaterThan50 = (List<Cell> row) -> row.get(2).getAsInt() > 50;
+        Relation polSciClassroomsCapacity = ra.select(polSciClassroomsBuilding, capacityGreaterThan50);
+        Relation statClassroomsCapacity = ra.select(statClassroomsBuilding, capacityGreaterThan50);
+        Relation polSciAndStatClassrooms = ra.union(polSciClassroomsCapacity, statClassroomsCapacity);     
+        Relation result2 = ra.project(polSciAndStatClassrooms, List.of("Building", "Room Number"));  
         result2.print();
 
          
