@@ -132,7 +132,7 @@ public class Driver {
         Relation coursesIn2009 = ra.select(teaches, taughtIn2009);
         Relation instructorsWhoTaughtIn2009 = ra.join(instructor, coursesIn2009);
         Relation instructorsWhoTaughtIn2009AndHighSalary = ra.join(highSalaryInstructors, instructorsWhoTaughtIn2009);
-        Relation result3 = ra.project(instructorsWhoTaughtIn2009AndHighSalary, List.of("Name", "Salary"));
+        Relation result3 = ra.project(instructorsWhoTaughtIn2009AndHighSalary, List.of("Instructor ID", "Name", "Salary"));
 
         result3.print();
 
