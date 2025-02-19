@@ -97,7 +97,8 @@ public class Driver {
                 
 
 
-        //select the name and ID of students who has been advised by an instructor in statistics department and has Student ID < 5000 
+        //select the name and ID of students who has been advised by an instructor in statistics department and has Student ID < 5000
+        System.out.println("select the name and ID of students who has been advised by an instructor in statistics department and has Student ID < 5000");
         Predicate instructorStat = (List<Cell> row) -> row.get(2).getAsString().equals("Statistics");
         Relation instructorStatDept = ra.select(instructor, instructorStat);
         Relation instructor_Stat_ID = ra.project(instructorStatDept,List.of("Instructor ID"));
@@ -111,6 +112,7 @@ public class Driver {
         result1.print();
 
         // Select name of advisors who advise students in either the accounting or marketing department
+        System.out.println("Select name of advisors who advise students in either the accounting or marketing department");
         Predicate accounting = (List<Cell> row) -> row.get(2).getAsString().equals("Accounting");
         Predicate marketing = (List<Cell> row) -> row.get(2).getAsString().equals("Marketing");
         Relation accountingMajor = ra.select(student, accounting);
@@ -125,7 +127,8 @@ public class Driver {
         result2.print();
 
          
-        // Select the name and salary of instructors who have a salary greater than 80000 and taught a course in the year 2009
+        // Select the ID, name and salary of instructors who have a salary greater than 80000 and taught a course in the year 2009
+        System.out.println("Select the ID, name and salary of instructors who have a salary greater than 80000 and taught a course in the year 2009");
         Predicate salaryGreaterThan80000 = (List<Cell> row) -> row.get(instructor.getAttrIndex("Salary")).getAsDouble() > 80000;
         Relation highSalaryInstructors = ra.select(instructor, salaryGreaterThan80000);
         Predicate taughtIn2009 = (List<Cell> row) -> row.get(teaches.getAttrIndex("Year")).getAsInt() == 2009;
@@ -136,6 +139,17 @@ public class Driver {
 
         result3.print();
 
+
+        // Select the ID, name and salary instructors who taught a class in the Gates building    
+        System.out.println("Select the ID, name and salary instructors who taught a class in the Gates building");
+        Predicate sectionsInGates = (List<Cell> row) -> row.get(section.getAttrIndex("Building")).getAsString().equals("Gates");      
+        Relation sectionsInGatesRelation = ra.select(section, sectionsInGates);
+        Relation teachesInGates = ra.join(sectionsInGatesRelation, teaches);
+        Relation teachesInGatesID = ra.project(teachesInGates, List.of("Instructor ID"));
+        Relation teachesInGatesInstructor = ra.join(instructor, teachesInGatesID);
+        Relation result4 = ra.project(teachesInGatesInstructor, List.of("Instructor ID", "Name", "Salary"));
+
+        result4.print();
 
 
     }
