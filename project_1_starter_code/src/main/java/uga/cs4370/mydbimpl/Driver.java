@@ -151,7 +151,20 @@ public class Driver {
 
         result4.print();
 
-
+        // Select names and ID of all students that have more than 75 credits and have been advised by an instructor in Computer Science
+        Predicate cs_instructor = (List<Cell> row) -> row.get(2).getAsString().equals("Comp. Sci.");
+        Relation cs_instructors = ra.select(instructor, cs_instructor);
+        Relation cs_instructors_ID = ra.project(cs_instructors,List.of("Instructor ID"));
+        Relation cs_advised = ra.join(advisor, cs_instructors_ID);
+        Relation cs_advised_ID = ra.project(cs_advised, List.of("Student ID"));
+        Predicate higher_credits = (List<Cell> row) -> row.get(3).getAsInt()>75;
+        Relation senior_students = ra.select(student, higher_credits);
+        Relation cs_students_advised = ra.join(cs_advised_ID, senior_students);
+        Relation cs_student_info = ra.project(cs_students_advised, List.of("Student ID","Name"));
+        Relation result5 = cs_student_info;
+        
+        result5.print();
+        
     }
 
 }
