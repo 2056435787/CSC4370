@@ -5,6 +5,8 @@ javac "filename.java"
 Execute using vs code or 
 java "javaclass"
 
+Group number: 2 
+
 Contributions: 
 
 Firas Astwani: 
