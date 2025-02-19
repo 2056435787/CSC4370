@@ -69,8 +69,8 @@ public class Driver {
                 .build();
 
         Relation teaches = new RelationBuilder()
-                .attributeNames(List.of("ID", "Course ID", "Section ID", "Semester", "Year"))
-                .attributeTypes(List.of(Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.STRING, Type.INTEGER))
+                .attributeNames(List.of("Instructor ID", "Course ID", "Section ID", "Semester", "Year"))
+                .attributeTypes(List.of(Type.STRING, Type.INTEGER, Type.INTEGER, Type.STRING, Type.INTEGER))
                 .build();  
         
         Relation time_slot = new RelationBuilder()
@@ -80,19 +80,20 @@ public class Driver {
 
 
         
+
         System.out.println("Current working directory: " + Paths.get("").toAbsolutePath().toString());
 
-        advisor.loadData("C:\\Users\\haizh\\Downloads\\CSC4370-main\\CSC4370-main\\project_1_starter_code/CSV/advisor.csv");
-        classroom.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/classroom.csv");
-        course.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/course.csv");
-        department.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/department_export.csv");
-        instructor.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/instructor_export.csv");
-        prereq.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/prereq.csv");
-        section.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/section.csv");
-        student.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/student.csv");
-        takes.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/takes.csv");
-        teaches.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/teaches.csv");
-        time_slot.loadData("C:\\\\Users\\\\haizh\\\\Downloads\\\\CSC4370-main\\\\CSC4370-main\\\\project_1_starter_code/CSV/time_slot.csv");
+        advisor.loadData("project_1_starter_code/CSV/advisor.csv");
+        classroom.loadData("project_1_starter_code/CSV/classroom.csv");
+        course.loadData("project_1_starter_code/CSV/course.csv");
+        department.loadData("project_1_starter_code/CSV/department_export.csv");
+        instructor.loadData("project_1_starter_code/CSV/instructor_export.csv");
+        prereq.loadData("project_1_starter_code/CSV/prereq.csv");
+        section.loadData("project_1_starter_code/CSV/section.csv");
+        student.loadData("project_1_starter_code/CSV/student.csv");
+        takes.loadData("project_1_starter_code/CSV/takes.csv");
+        teaches.loadData("project_1_starter_code/CSV/teaches.csv");
+        time_slot.loadData("project_1_starter_code/CSV/time_slot.csv");
                 
 
 
@@ -123,8 +124,20 @@ public class Driver {
         
         result2.print();
 
+         
+        // Select the name and salary of instructors who have a salary greater than 80000 and taught a course in the year 2009
+        Predicate salaryGreaterThan80000 = (List<Cell> row) -> row.get(instructor.getAttrIndex("Salary")).getAsDouble() > 80000;
+        Relation highSalaryInstructors = ra.select(instructor, salaryGreaterThan80000);
+        Predicate taughtIn2009 = (List<Cell> row) -> row.get(teaches.getAttrIndex("Year")).getAsInt() == 2009;
+        Relation coursesIn2009 = ra.select(teaches, taughtIn2009);
+        Relation instructorsWhoTaughtIn2009 = ra.join(instructor, coursesIn2009);
+        Relation instructorsWhoTaughtIn2009AndHighSalary = ra.join(highSalaryInstructors, instructorsWhoTaughtIn2009);
+        Relation result3 = ra.project(instructorsWhoTaughtIn2009AndHighSalary, List.of("Name", "Salary"));
 
-        
+        result3.print();
+
+
+
     }
 
 }
